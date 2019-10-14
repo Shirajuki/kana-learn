@@ -1,0 +1,365 @@
+<!doctype html>
+<html>
+<head>
+	<title>Jonny</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+	<link href="css/index.css" rel="stylesheet" type="text/css">
+	<link href="css/preloader.css" rel="stylesheet" type="text/css">
+	<script src="kana.js" charset="utf-8" preload></script>
+	<script src="kana2.js" charset="utf-8" preload></script>
+	<script type="text/javascript">
+	// https://emojipedia.org/symbols/
+	const randint = (min, max) => Math.floor(Math.random() * (max - min) ) + min;
+	const shuffle = array => array.sort(() => Math.random() - 0.5);
+		setTimeout(showPage, 14);
+	  function showPage() {
+			document.getElementById("loader").style.visibility = "hidden";
+			document.getElementById("loader").style.opacity = 0;
+	    setTimeout(() => {
+				// document.getElementById('hiragana').click();
+	      document.getElementById("loader").style.display = "none";
+	    },500)
+	  }
+		let contents, menyButtons;
+		let dhiragana, dkatakana, gameover, checkBox, eback;
+		let listWords1, listWords2;
+		let sliderange, sliderangedsp;
+		let fetchedCharacters = [];
+		let dictCards = [];
+		let studyCardN = 0, correctStudy = [], totalCharacters = 0;
+		// Onload DOM and Event setups. Also calls some functions to initialize the app.
+		window.onload = () => {
+		// STUDY
+			dhiragana = document.getElementById('hiragana');
+			dhiragana.onclick = () => {
+				getCategory(checkBox,"hiragana");
+				displayCharacters(totalCharacters,dictCards);
+			}
+			dkatakana = document.getElementById('katakana');
+			dkatakana.onclick = () => {
+				getCategory(checkBox,"katakana");
+				displayCharacters(totalCharacters,dictCards);
+			}
+			gameover = document.getElementById('gameover');
+			bigCard = document.getElementById('bigCard');
+			eback = document.getElementById('eback');
+			eback.onclick = () => {
+				openClose(false,study);
+			}
+		// checkbox
+			checkBox = document.querySelectorAll(`input[name*="data"]`);
+			for (let i = 0; i < checkBox.length; i++) {
+				checkBox[i].onchange = () => getCategory(checkBox);
+			}
+			sliderange = document.getElementById('sliderange');
+			sliderangedsp = document.getElementById('sliderangedsp');
+			sliderangedsp.innerText = sliderange.value;
+			totalCharacters = +sliderange.value;
+			sliderange.oninput = () => {
+				sliderangedsp.innerText = sliderange.value;
+				totalCharacters = +sliderange.value;
+			}
+			getCategory(checkBox);
+		// DOM - footer
+			contents = document.getElementsByClassName('contents');
+			menyButtons = document.getElementsByClassName('menyButtons');
+			for (let c of menyButtons) {
+				c.onclick = function() {menyChange(this.name,contents,menyButtons)};
+			}
+			menyChange(0,contents,menyButtons);
+		// listWords
+			listWords1 = document.getElementById('listWords1');
+			listWords1.innerHTML = "<h3>Hiragana</h3>"
+			for (chr of hiragana) {
+				listWords1.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
+			}
+			listWords2 = document.getElementById('listWords2');
+			listWords2.innerHTML = "<h3>Katakana</h3>"
+			for (chr of katakana) {
+				listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
+			}
+		}
+		function displayCharacters(amount,list,type="all") {
+			fetchedCharacters = getCharacters(amount,list,type);
+			correctStudy = [...Array(fetchedCharacters.length).fill(0)];
+			progress.value = 0;
+			progress.max = fetchedCharacters.length;
+			studyCardN = 0;
+			studyCard(fetchedCharacters,bigCard.firstElementChild);
+			openClose(true,study);
+		}
+		function getCharacters(amount,list,type="all") {
+			const max = list.length;
+			newList = [];
+			while (newList.length !== amount) {
+				let rnd = randint(0,max);
+				if (newList.indexOf(rnd) == -1) { // if added item doesnt exist on the list
+					newList.push(rnd);
+				}
+			}
+			newnewList = [];
+			for (let i of newList) {
+				newnewList.push(list[i]);
+			}
+			return newnewList
+		}
+		function menyChange(meny,contents,menyButtons) {
+			for (let i = 0; i < contents.length; i++) {
+				menyButtons[i].classList.remove('active');
+				contents[i].style.display = 'none';
+			}
+			menyButtons[meny].classList.add('active');
+			contents[meny].style.display = 'block';
+		}
+		// Custom function for toggling CSS animations after a given time.
+		function toggleAnimate(dom,animateName,time=1400) {
+			dom.classList.toggle(animateName);
+			setTimeout(() =>{
+				dom.classList.toggle(animateName);
+			},time);
+		}
+		// Custom function to open/close popups.
+		function openClose(bool,dom,animateType=1) {
+		  if (bool) {
+		    dom.style.visibility = 'visible';
+		    dom.style.opacity = '1';
+
+				if (animateType !== 0) {
+					for (let i = 0; i < dom.childElementCount; i++) {
+						toggleAnimate(dom.children[i],`animate-${animateType}`);
+					}
+				}
+		  } else {
+		    dom.style.visibility = 'hidden';
+		    dom.style.opacity = '0';
+		  }
+		}
+		// Get unique cards from dictCards
+		function getCards(list,n,index=true) {
+			let set = new Set();
+			while (set.size < n) {
+				if (index) {
+					set.add(randint(0,list.length-1));
+				} else {
+					set.add(list[randint(0,list.length-1)])
+				}
+			}
+			set = Array.from(set);
+			console.log(set);
+			return set;
+		}
+		// Function that operates the study section of the app,
+		// shows and setups other functions for the game to work.
+		function studyCard(chr,front) {
+			if (studyCardN >= chr.length) {
+				setTimeout(() => {
+					openClose(true,gameover);
+					gameover.innerHTML = (correctStudy.reduce((a,x) => a+x) !== chr.length) ? ('<h1>FAIL</h1>') : ('<h1>PASS</h1>');
+					gameover.innerHTML += `<p>${(correctStudy.reduce((a,x) => a+x) > 0) ? (correctStudy.reduce((a,x) => a+x)) : 0} / ${chr.length} correct</p>`;
+					studyCardN = 0;
+					progress.value = 0;
+					correctStudy = [...Array(fetchedCharacters.length).fill(0)];
+					setTimeout(() => {
+						openClose(false,gameover);
+						openClose(false,study);
+						if (gameover.innerHTML.slice(4,8) !== "PASS") {
+							openClose(true,study);
+							studyCardN = -1;
+							studies();
+						}
+					},1000)
+				},1000)
+			} else {
+				let character = chr[studyCardN];
+				console.log(studyCardN,chr.length);
+				front.innerHTML = `
+				<p>${character.kana}</p>
+				`;
+				front.value = character.roumaji;
+				// get 3 button cards
+				let rndThree = getCards(hiragana,3,false);
+				// push correct card inn
+				if (!rndThree.includes(character)) {
+					rndThree.pop();
+					rndThree.push(character);
+				}
+				rndThree = shuffle(rndThree);
+				toggleAnimate(bigCard,'animate-2');
+				toggleAnimate(divAnswers,'animate-3');
+				divAnswers.innerHTML = '';
+				for (chr of rndThree) {
+					let answerBtn = document.createElement('button');
+					answerBtn.innerHTML = chr.roumaji;
+					answerBtn.value = 'undefined';
+					setTimeout(() => answerBtn.value = 'canClick',900);
+					answerBtn.onclick = function() {
+						if (this.value != 'undefined') {
+							this.classList.toggle('active');
+							console.log(this)
+							this.disabled = true;
+							if (this.innerHTML == front.value) {
+								front.firstElementChild.classList.toggle('correct');
+								console.log(this.innerHTML, front.value);
+								correctStudy[studyCardN] = 1;
+								this.style.boxShadow = '0 0 10px 10px rgb(255,230,230)';
+								this.style.backgroundColor = 'white';
+							} else {
+								correctStudy[studyCardN] = 0;
+								front.firstElementChild.classList.toggle('wrong');
+							}
+							for (dom of divAnswers.children) {
+								dom.disabled = true;
+							}
+							setTimeout(() => {
+								progress.value++;
+								studies();
+							},700);
+						}
+					}
+					divAnswers.appendChild(answerBtn);
+				}
+			}
+		}
+		function studies() {
+			studyCardN++;
+			studyCard(fetchedCharacters,bigCard.firstElementChild);
+		}
+		// Function to choose which HSK level, display as text too.
+		function getCategory(arrDom,kana="hiragana") {
+			dictCards = [];
+			for (let i = 0; i < arrDom.length; i++) {
+				if (arrDom[i].checked) {
+					console.log(arrDom[i].value)
+					let value = arrDom[i].value;
+					// Push all chrs to dict.
+					const dict = eval(kana).filter(word => word.type == value);
+					for (let i = 0; i < dict.length; i++) {
+						dictCards.push(dict[i]);
+					}
+				}
+			}
+			if (dictCards.length == 0) {
+				arrDom[0].checked = true;
+				// Push all chrs to dict.
+				const dict = hiragana.filter(word => word.type == "gojuuon");
+				for (let i = 0; i < dict.length; i++) {
+					dictCards.push(dict[i]);
+				}
+			}
+			sliderange.max = dictCards.length;
+			sliderangedsp.innerText = sliderange.value;
+			totalCharacters = +sliderange.value;
+		}
+	</script>
+</head>
+<body>
+	<div id="loader">
+		<div class="spinner" preload></div>
+	</div>
+
+	<!-- Header -->
+	<header>
+		<p>Kana-learn - Shirajuki</p>
+		<br><br>
+	</header>
+	<br>
+	<!-- Main -->
+	<main>
+		<!-- PAGE 1 -->
+		<div class='contents' id="page1">
+			<div class="kanaHolder">
+				<button class="btn kana" id="hiragana">Hiragana</button>
+				<button class="btn kana" id="katakana">Katakana</button>
+			</div>
+			<br/>
+			<input id="sliderange" type="range" name="" min="1" max="30" value="2"/>
+			<p id="sliderangedsp">69</p>
+			<div class="checkBox">
+				<div>
+					<p>
+						<input value="gojuuon" type="checkbox" name="data1" id="data1" checked>
+						<label for="data1">gojuuon</label>
+					</p>
+					<p>
+						<input value="dakuon" type="checkbox" name="data1" id="data2">
+						<label for="data2">dakuon</label>
+					</p>
+					<p>
+						<input value="handakuon" type="checkbox" name="data3" id="data3">
+						<label for="data3">handakuon</label>
+					</p>
+					<p>
+						<input value="sokuon" type="checkbox" name="data4" id="data4">
+						<label for="data4">sokuon</label>
+					</p>
+					<p>
+						<input value="youon" type="checkbox" name="data5" id="data5">
+						<label for="data5">youon</label>
+					</p>
+				</div>
+			</div>
+			<!-- <button id='estudy' class='btn'>Study</button> -->
+		</div>
+		<!-- PAGE 2 -->
+		<div class='contents' id="page2">
+			<div class="listWords" id="listWords1">
+				<h3>Hiragana:</h3>
+				<div><span>A</span><span>B</span><span>C</span></div>
+				<h3>Katakana:</h3>
+				<div><span>A</span><span>B</span><span>C</span></div>
+				<br><br>
+			</div>
+		</div>
+
+		<!-- PAGE 3 -->
+		<div class='contents' >
+			<div class="listWords" id="listWords2">
+				<h3>Hiragana:</h3>
+				<div><span>A</span><span>B</span><span>C</span></div>
+				<h3>Katakana:</h3>
+				<div><span>A</span><span>B</span><span>C</span></div>
+				<br><br>
+			</div>
+		</div>
+	</main>
+	<div class="popup" id='gameover'>
+		<h1>FAIL</h1>
+	</div>
+	<div class="popup" id='study'>
+		<header>
+			<div>
+				<p><a id='eback'><i>⬅</i> RETURN</a></p>
+				<p>
+					<label class="switch">
+					  <input type="checkbox" id='pinyinToggle'>
+					  <span class="slider round"></span>
+					</label>
+				</p>
+			</div>
+		</header>
+		<div id="eflip">
+			<div id="bigCard">
+				<div class="front">
+					<p>狗</p>
+				</div>
+			</div>
+		</div>
+		<br><br><br><br>
+		<div style='justify-content: center; display: flex; width: 93%;'>
+			<div id="divAnswers" class="studyBtn">
+				<button>A1</button>
+				<button>A2</button>
+				<button>A3</button>
+			</div>
+		</div>
+		<progress id='progress' value="0" max="9"></progress>
+	</div>
+	<!-- Footer -->
+	<footer>
+		<button name="0" class='menyButtons' class='active'><i>🏠</i></button>
+		<button name="1" class='menyButtons'><i>📚</i></button>
+		<button name="2" class='menyButtons'><i>📚</i></button>
+	</footer>
+</body>
+</html>
