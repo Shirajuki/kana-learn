@@ -80,6 +80,43 @@
 				listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
 			}
 		}
+		//// EVENT
+		let pressed = false;
+		let game = true;
+		document.addEventListener("keydown", keyDownHandler, false);
+		function keyDownHandler(e) {
+			if (!pressed && game) {
+				if (e.keyCode == 49) {
+					pressed = true;
+					divAnswers.children[0].click();
+				} else if (e.keyCode == 50) {
+					pressed = true;
+					divAnswers.children[1].click();
+				} else if (e.keyCode == 51) {
+					pressed = true;
+					divAnswers.children[2].click();
+				}
+			} else if (e.keyCode == 32 || e.keyCode == 13) {
+				if (gameover.style.visiblity !== "hidden") {
+					openClose(false,gameover);
+					openClose(false,study);
+					studyCard(shuffle(fetchedCharacters),bigCard.firstElementChild);
+					openClose(true,study,3);
+				}
+			}
+		}
+		document.addEventListener("keyup", keyUpHandler, false);
+		function keyUpHandler(e) {
+			if (pressed) {
+				if (e.keyCode == 49) {
+					pressed = false;
+				} else if (e.keyCode == 50) {
+					pressed = false;
+				} else if (e.keyCode == 51) {
+					pressed = false;
+				}
+			}
+		}
 		function displayCharacters(amount,list,type="all") {
 			fetchedCharacters = getCharacters(amount,list,type);
 			correctStudy = [...Array(fetchedCharacters.length).fill(0)];
@@ -146,29 +183,57 @@
 				}
 			}
 			set = Array.from(set);
-			console.log(set);
 			return set;
 		}
 		// Function that operates the study section of the app,
 		// shows and setups other functions for the game to work.
 		function studyCard(chr,front) {
+			game = true;
 			if (studyCardN >= chr.length) {
 				setTimeout(() => {
+					game = false;
 					openClose(true,gameover);
-					gameover.innerHTML = (correctStudy.reduce((a,x) => a+x) !== chr.length) ? ('<h1>FAIL</h1>') : ('<h1>PASS</h1>');
-					gameover.innerHTML += `<p>${(correctStudy.reduce((a,x) => a+x) > 0) ? (correctStudy.reduce((a,x) => a+x)) : 0} / ${chr.length} correct</p>`;
+					openClose(false,study);
+					gameover.style.width = "100%";
+					gameover.style.height = "100%";
+					console.log(correctStudy)
+					gameover.innerHTML = (correctStudy.reduce((a,x) => a+x) !== chr.length) ? ('<h1 style="color: #ff3b3b;">FAIL</h1>') : ('<h1 style="color: #43ff43;">PASS</h1>');
+					gameover.innerHTML += `<p>${correctStudy.reduce((a,x) => a+x)} / ${chr.length} correct</p> <div></div>`;
+					for (let i = 0; i < chr.length; i++) {
+						gameover.lastElementChild.innerHTML += `
+						<ul>
+						<li ${(correctStudy[i] == 0) ? ('style="color: #ff3b3b;"') : ('style="color: #43ff43;"')}>${chr[i].kana}</li>
+						<li>${chr[i].roumaji}</li>
+						</ul>
+						`;
+					}
+					// closebutton
+					let closeBtn = document.createElement('button');
+					closeBtn.className = "btn"
+					closeBtn.onclick = () => {
+						openClose(false,gameover);
+					}
+					closeBtn.innerText = "close";
+					gameover.lastElementChild.appendChild(document.createElement('br'));
+					gameover.lastElementChild.appendChild(closeBtn);
+					gameover.lastElementChild.appendChild(document.createElement('br'));
+					gameover.lastElementChild.appendChild(document.createElement('br'));
+					//
+					// closebutton
+					let retryBtn = document.createElement('button');
+					retryBtn.className = "btn"
+					retryBtn.onclick = () => {
+						openClose(false,gameover);
+						openClose(false,study);
+						studyCard(shuffle(chr),bigCard.firstElementChild);
+						openClose(true,study,3);
+					}
+					retryBtn.innerText = "retry";
+					gameover.lastElementChild.appendChild(retryBtn);
+					//
 					studyCardN = 0;
 					progress.value = 0;
 					correctStudy = [...Array(fetchedCharacters.length).fill(0)];
-					setTimeout(() => {
-						openClose(false,gameover);
-						openClose(false,study);
-						if (gameover.innerHTML.slice(4,8) !== "PASS") {
-							openClose(true,study);
-							studyCardN = -1;
-							studies();
-						}
-					},1000)
 				},1000)
 			} else {
 				let character = chr[studyCardN];
@@ -178,7 +243,7 @@
 				`;
 				front.value = character.roumaji;
 				// get 3 button cards
-				let rndThree = getCards(hiragana,3,false);
+				let rndThree = getCards(dictCards,3,false);
 				// push correct card inn
 				if (!rndThree.includes(character)) {
 					rndThree.pop();
@@ -196,13 +261,12 @@
 					answerBtn.onclick = function() {
 						if (this.value != 'undefined') {
 							this.classList.toggle('active');
-							console.log(this)
 							this.disabled = true;
 							if (this.innerHTML == front.value) {
 								front.firstElementChild.classList.toggle('correct');
 								console.log(this.innerHTML, front.value);
 								correctStudy[studyCardN] = 1;
-								this.style.boxShadow = '0 0 10px 10px rgb(255,230,230)';
+								this.style.boxShadow = '0 0 5px 5px rgb(255,230,230)';
 								this.style.backgroundColor = 'white';
 							} else {
 								correctStudy[studyCardN] = 0;
@@ -210,6 +274,10 @@
 							}
 							for (dom of divAnswers.children) {
 								dom.disabled = true;
+								if (dom.innerHTML == front.value) {
+									dom.style.boxShadow = '0 0 5px 5px rgb(255,230,230)';
+									dom.style.backgroundColor = 'white';
+								}
 							}
 							setTimeout(() => {
 								progress.value++;
@@ -239,7 +307,7 @@
 					}
 				}
 			}
-			if (dictCards.length == 0) {
+			if (dictCards.length <= 1) {
 				arrDom[0].checked = true;
 				// Push all chrs to dict.
 				const dict = hiragana.filter(word => word.type == "gojuuon");
