@@ -77,6 +77,32 @@ body {
   display: none;
   animation: fadein 1s linear;
 }
+.contents3 {
+  display: none;
+  animation: fadein 1s linear;
+}
+.meny33 .active:after {
+  content: '_________';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translate(-50%,0);
+}
+div.meny33 {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-gap: 5px;
+  justify-content: space-around;
+  color: white;
+  border-radius: 10px 10px 0 0;
+  background-color: rgba(0,0,0,0.2);
+}
+.menyButtons3 {
+  border-radius: 3px;
+  margin: 0 20px;
+  color: white;
+  background: rgba(0,0,0,0);
+}
 a, button {
   cursor: pointer;
 }
@@ -473,7 +499,7 @@ progress[value]::-webkit-progress-value {
   width: 90%;
   text-align: left;
   overflow-y: scroll;
-  max-height: 100px;
+  max-height: 200px;
 }
 @media only screen and (max-width: 600px) {
   #page1>div>div::-webkit-scrollbar {

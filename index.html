@@ -22,6 +22,7 @@
 	    },500)
 	  }
 		let contents, menyButtons;
+		let contents3, menyButtons3;
 		let dhiragana, dkatakana, gameover, checkBox, eback;
 		let listWords1, listWords2;
 		let sliderange, sliderangedsp;
@@ -68,17 +69,24 @@
 				c.onclick = function() {menyChange(this.name,contents,menyButtons)};
 			}
 			menyChange(0,contents,menyButtons);
+		// PAGE 3
+			contents3 = document.getElementsByClassName('contents3');
+			menyButtons3 = document.getElementsByClassName('menyButtons3');
+			for (let c of menyButtons3) {
+				c.onclick = function() {menyChange(this.name,contents3,menyButtons3)};
+			}
+			menyChange(0,contents3,menyButtons3);
 		// listWords
 			listWords1 = document.getElementById('listWords1');
-			listWords1.innerHTML = "<h3>Hiragana</h3>"
 			for (chr of hiragana) {
 				listWords1.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
 			}
+			listWords1.innerHTML += "<br/>"
 			listWords2 = document.getElementById('listWords2');
-			listWords2.innerHTML = "<h3>Katakana</h3>"
 			for (chr of katakana) {
 				listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
 			}
+			listWords2.innerHTML += "<br/>"
 		}
 		//// EVENT
 		let pressed = false;
@@ -371,23 +379,23 @@
 		</div>
 		<!-- PAGE 2 -->
 		<div class='contents' id="page2">
-			<div class="listWords" id="listWords1">
-				<h3>Hiragana:</h3>
-				<div><span>A</span><span>B</span><span>C</span></div>
-				<h3>Katakana:</h3>
-				<div><span>A</span><span>B</span><span>C</span></div>
-				<br><br>
-			</div>
+
 		</div>
 
 		<!-- PAGE 3 -->
 		<div class='contents' >
-			<div class="listWords" id="listWords2">
-				<h3>Hiragana:</h3>
-				<div><span>A</span><span>B</span><span>C</span></div>
-				<h3>Katakana:</h3>
-				<div><span>A</span><span>B</span><span>C</span></div>
-				<br><br>
+			<div class="meny33">
+				<button name="0" class='menyButtons3' class='active'><i>Hiragana</i></button>
+				<button name="1" class='menyButtons3'><i>Katakana</i></button>
+			</div>
+			<div class="contents3" id="page31">
+				<div class="listWords" id="listWords1">
+				</div>
+			</div>
+
+			<div class="contents3" id="page32">
+				<div class="listWords" id="listWords2">
+				</div>
 			</div>
 		</div>
 	</main>
