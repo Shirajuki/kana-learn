@@ -60,7 +60,7 @@ body {
 }
 .contents .listWords {
   overflow-y: scroll;
-  height: 100vh;
+  height: 96vh;
 }
 .contents .listWords div {
   font-size: 1.6rem;

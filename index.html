@@ -8,6 +8,7 @@
 	<link href="css/preloader.css" rel="stylesheet" type="text/css">
 	<script src="kana.js" charset="utf-8" preload></script>
 	<script src="kana2.js" charset="utf-8" preload></script>
+	<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 	<script type="text/javascript">
 	// https://emojipedia.org/symbols/
 	const randint = (min, max) => Math.floor(Math.random() * (max - min) ) + min;
@@ -84,6 +85,12 @@
 			listWords2 = document.getElementById('listWords2');
 			for (chr of katakana) {
 				listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
+			}
+		}
+		// Function to play tts if there's wifi
+		function playTTS(word) {
+			if (navigator.onLine) {
+				responsiveVoice.speak(word,"Japanese Female", "{pitch: 2, rate: 1, volume: 1}");
 			}
 		}
 		//// EVENT
@@ -285,6 +292,7 @@
 									dom.style.backgroundColor = 'white';
 								}
 							}
+							playTTS(front.innerText);
 							setTimeout(() => {
 								progress.value++;
 								studies();
