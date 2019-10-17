@@ -81,12 +81,10 @@
 			for (chr of hiragana) {
 				listWords1.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
 			}
-			listWords1.innerHTML += "<br/>"
 			listWords2 = document.getElementById('listWords2');
 			for (chr of katakana) {
 				listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
 			}
-			listWords2.innerHTML += "<br/>"
 		}
 		//// EVENT
 		let pressed = false;
