@@ -23,9 +23,10 @@
 	    },500)
 	  }
 		let contents, menyButtons;
+		let contents2, menyButtons2;
 		let contents3, menyButtons3;
 		let dhiragana, dkatakana, gameover, checkBox, eback;
-		let listWords1, listWords2;
+		let listWords1, listWords2, listWords3, listWords4, countedWords = [];
 		let sliderange, sliderangedsp;
 		let fetchedCharacters = [];
 		let dictCards = [];
@@ -77,14 +78,73 @@
 				c.onclick = function() {menyChange(this.name,contents3,menyButtons3)};
 			}
 			menyChange(0,contents3,menyButtons3);
+			contents2 = document.getElementsByClassName('contents2');
+			menyButtons2 = document.getElementsByClassName('menyButtons2');
+			for (let c of menyButtons2) {
+				c.onclick = function() {menyChange(this.name,contents2,menyButtons2)};
+			}
+			menyChange(0,contents2,menyButtons2);
 		// listWords
 			listWords1 = document.getElementById('listWords1');
 			for (chr of hiragana) {
-				listWords1.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
+				if (chr.roumaji[1] == "y" || (chr.roumaji.slice(0,2) == "sh" && chr.roumaji[2] !== "i") || (chr.roumaji[0] == "j" && chr.roumaji[1] !== "i") || (chr.roumaji.slice(0,2) == "ch" && chr.roumaji[2] !== "i")) {
+					document.getElementById('divdiv1').innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span></div>`
+				} else {
+					listWords1.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span></div>`
+				}
+				if (chr.roumaji == "ya" || chr.roumaji == "yu") listWords1.innerHTML += `<div></div>`;
+				if (chr.roumaji == "wa") listWords1.innerHTML += `<div></div> <div></div> <div></div>`;
+				if (chr.roumaji == "n") listWords1.innerHTML += `<div></div> <div></div> <div></div> <div></div> <div style="grid-column: span 5;"></div>`;
+				if (chr.roumaji == "(pause)") listWords1.innerHTML += `<div></div> <div></div> <div></div> <div></div>
+				<div id="divdiv1" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px;"><div></div> <div></div> <div></div></div>`;
 			}
 			listWords2 = document.getElementById('listWords2');
 			for (chr of katakana) {
-				listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.type}</span></div>`
+				if (chr.roumaji[1] == "y" || (chr.roumaji.slice(0,2) == "sh" && chr.roumaji[2] !== "i") || (chr.roumaji[0] == "j" && chr.roumaji[1] !== "i") || (chr.roumaji.slice(0,2) == "ch" && chr.roumaji[2] !== "i")) {
+					document.getElementById('divdiv2').innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span></div>`
+				} else {
+					listWords2.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span></div>`
+				}
+				if (chr.roumaji == "ya" || chr.roumaji == "yu") listWords2.innerHTML += `<div></div>`;
+				if (chr.roumaji == "wa") listWords2.innerHTML += `<div></div> <div></div> <div></div>`;
+				if (chr.roumaji == "n") listWords2.innerHTML += `<div></div> <div></div> <div></div> <div></div> <div style="grid-column: span 5;"></div>`;
+				if (chr.roumaji == "(pause)") listWords2.innerHTML += `<div></div> <div></div> <div></div> <div></div>
+				<div id="divdiv2" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px;"><div></div> <div></div> <div></div></div>`;
+			}
+			// countWords
+			if (localStorage.getItem('kanaLearn') == null) {
+				countedWords = [...hiragana.map(el => ({...el, count: 0, type: "hiragana"}))];
+				countedWords = [...countedWords, katakana.map(el => ({...el, count: 0, type: "katakana"}))].flat();
+				localStorage.kanaLearn = JSON.stringify(countedWords);
+			} else {
+				countedWords = JSON.parse(localStorage.kanaLearn);
+			}
+			listWords3 = document.getElementById('listWords3');
+			listWords4 = document.getElementById('listWords4');
+			countWords(countedWords);
+		}
+		//Function to send/fetch localStorage
+		function sendFetchLocalStorage(data) {
+			// fetchedCharacters
+			console.log(data);
+			for (let c of countedWords) {
+				if (data.kana == c.kana) {
+					c.count += 1;
+				}
+			}
+			countWords(countedWords);
+			localStorage.kanaLearn = JSON.stringify(countedWords);
+		}
+		//Function to count done words
+		function countWords(countedWords) {
+			listWords3.innerHTML = "";
+			listWords4.innerHTML = "";
+			for (chr of countedWords) {
+				if (chr.type == "hiragana") {
+					listWords3.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.count}</span></div>`
+				} else {
+					listWords4.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.count}</span></div>`
+				}
 			}
 		}
 		// Function to play tts if there's wifi
@@ -219,6 +279,7 @@
 						<li>${chr[i].roumaji}</li>
 						</ul>
 						`;
+						if (correctStudy[i] == 1) sendFetchLocalStorage(chr[i]);
 					}
 					// closebutton
 					let closeBtn = document.createElement('button');
@@ -385,7 +446,20 @@
 		</div>
 		<!-- PAGE 2 -->
 		<div class='contents' id="page2">
+			<div class="meny22">
+				<button name="0" class='menyButtons2' class='active'><i>Hiragana</i></button>
+				<button name="1" class='menyButtons2'><i>Katakana</i></button>
+			</div>
+			<div class="contents2" id="page21">
+				<div class="listWords" id="listWords3">
+				</div>
+			</div>
 
+			<div class="contents2" id="page22">
+				<div class="listWords" id="listWords4">
+				</div>
+			</div>
+		</div>
 		</div>
 
 		<!-- PAGE 3 -->
@@ -405,9 +479,11 @@
 			</div>
 		</div>
 	</main>
+	<!-- POPUP -->
 	<div class="popup" id='gameover'>
 		<h1>FAIL</h1>
 	</div>
+	<!-- POPUP -->
 	<div class="popup" id='study'>
 		<header>
 			<div>
@@ -440,7 +516,7 @@
 	<!-- Footer -->
 	<footer>
 		<button name="0" class='menyButtons' class='active'><i>🏠</i></button>
-		<button name="1" class='menyButtons'><i>📚</i></button>
+		<button name="1" class='menyButtons'><i>📜</i></button>
 		<button name="2" class='menyButtons'><i>📚</i></button>
 	</footer>
 </body>

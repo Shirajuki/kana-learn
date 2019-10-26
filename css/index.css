@@ -62,6 +62,21 @@ body {
   overflow-y: scroll;
   height: 96vh;
 }
+#listWords1, #listWords2 {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(18%,1fr));
+  grid-gap: 5px;
+  overflow-x: hidden;
+}
+#listWords1 div, #listWords2 div {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-height: 57.33px;
+}
+#listWords1 div span:last-child, #listWords2 div span:last-child {
+  font-size: 1.1rem;
+}
 .contents .listWords div {
   font-size: 1.6rem;
   color: black;
@@ -73,22 +88,18 @@ body {
   margin: 3px 0;
   padding: 5px 0;
 }
-.contents {
+.contents, .contents2, .contents3 {
   display: none;
   animation: fadein 1s linear;
 }
-.contents3 {
-  display: none;
-  animation: fadein 1s linear;
-}
-.meny33 .active:after {
+.meny22 .active:after, .meny33 .active:after {
   content: '_________';
   position: absolute;
   bottom: 4px;
   left: 50%;
   transform: translate(-50%,0);
 }
-div.meny33 {
+div.meny22, div.meny33 {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-gap: 5px;
@@ -97,7 +108,7 @@ div.meny33 {
   border-radius: 10px 10px 0 0;
   background-color: rgba(0,0,0,0.2);
 }
-.menyButtons3 {
+.menyButtons2, .menyButtons3 {
   border-radius: 3px;
   margin: 0 20px;
   color: white;

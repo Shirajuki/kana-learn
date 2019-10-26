@@ -137,7 +137,7 @@ var hiragana = [
 },
 {
   "kana": "ふ",
-  "roumaji": "hu",
+  "roumaji": "fu",
   "type": "gojuuon"
 },
 {

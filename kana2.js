@@ -137,7 +137,7 @@ var katakana = [
 },
 {
   "kana": "フ",
-  "roumaji": "hu",
+  "roumaji": "fu",
   "type": "gojuuon"
 },
 {
