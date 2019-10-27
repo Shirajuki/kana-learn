@@ -97,6 +97,7 @@
 				if (chr.roumaji == "n") listWords1.innerHTML += `<div></div> <div></div> <div></div> <div></div> <div style="grid-column: span 5;"></div>`;
 				if (chr.roumaji == "(pause)") listWords1.innerHTML += `<div></div> <div></div> <div></div> <div></div>
 				<div id="divdiv1" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px;"><div></div> <div></div> <div></div></div>`;
+				listWords1.innerHTML += "<br/>";
 			}
 			listWords2 = document.getElementById('listWords2');
 			for (chr of katakana) {
@@ -110,6 +111,7 @@
 				if (chr.roumaji == "n") listWords2.innerHTML += `<div></div> <div></div> <div></div> <div></div> <div style="grid-column: span 5;"></div>`;
 				if (chr.roumaji == "(pause)") listWords2.innerHTML += `<div></div> <div></div> <div></div> <div></div>
 				<div id="divdiv2" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px;"><div></div> <div></div> <div></div></div>`;
+				listWords2.innerHTML += "<br/>";
 			}
 			// countWords
 			if (localStorage.getItem('kanaLearn') == null) {
