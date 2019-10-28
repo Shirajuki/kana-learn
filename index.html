@@ -100,9 +100,9 @@
 				if (chr.roumaji == "wa") listWords1.innerHTML += `<div></div> <div></div> <div></div>`;
 				if (chr.roumaji == "n") listWords1.innerHTML += `<div></div> <div></div> <div></div> <div></div> <div style="grid-column: span 5;"></div>`;
 				if (chr.roumaji == "(pause)") listWords1.innerHTML += `<div></div> <div></div> <div></div> <div></div>
-				<div id="divdiv1" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px;"><div></div> <div></div> <div></div></div>`;
+				<div id="divdiv1" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px; min-height: 62px;"><div></div> <div></div> <div></div></div>`;
 			}
-			document.getElementById('divdiv1').innerHTML += "<br/><br/><br/><br/><br/><br/>";
+			document.getElementById('divdiv1').innerHTML += "<br/><br/><br/><br/>";
 			listWords2 = document.getElementById('listWords2');
 			for (chr of katakana) {
 				if (chr.roumaji[1] == "y" || (chr.roumaji.slice(0,2) == "sh" && chr.roumaji[2] !== "i") || (chr.roumaji[0] == "j" && chr.roumaji[1] !== "i") || (chr.roumaji.slice(0,2) == "ch" && chr.roumaji[2] !== "i")) {
@@ -114,9 +114,9 @@
 				if (chr.roumaji == "wa") listWords2.innerHTML += `<div></div> <div></div> <div></div>`;
 				if (chr.roumaji == "n") listWords2.innerHTML += `<div></div> <div></div> <div></div> <div></div> <div style="grid-column: span 5;"></div>`;
 				if (chr.roumaji == "(pause)") listWords2.innerHTML += `<div></div> <div></div> <div></div> <div></div>
-				<div id="divdiv2" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px;"><div></div> <div></div> <div></div></div>`;
+				<div id="divdiv2" style="grid-column: span 5; display: grid; grid-template-columns: repeat(3,1fr); grid-gap: 5px; min-height: 62px;"> <div></div> <div></div> <div></div> </div>`;
 			}
-			document.getElementById('divdiv2').innerHTML += "<br/><br/><br/><br/><br/><br/>";
+			document.getElementById('divdiv2').innerHTML += "<br/><br/><br/><br/>";
 			// countWords
 			if (localStorage.getItem('kanaLearn') == null) {
 				countedWords = [...hiragana.map(el => ({...el, count: 0, type: "hiragana"}))];
@@ -152,6 +152,8 @@
 					listWords4.innerHTML += `<div><span>${chr.kana}</span><span>${chr.roumaji}</span><span>${chr.count}</span></div>`
 				}
 			}
+			listWords3.innerHTML += "<br/><br/><br/><br/>";
+			listWords4.innerHTML += "<br/><br/><br/><br/>";
 		}
 		// Function to play tts if there's wifi
 		function playTTS(word) {
