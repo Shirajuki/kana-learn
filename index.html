@@ -14,8 +14,6 @@
 	if ('serviceWorker' in navigator) {
   	navigator.serviceWorker.register('service-worker.js');
 	}
-	var console = {};
-	console.log = function(x){alert(x)};
 	// https://emojipedia.org/symbols/
 	const randint = (min, max) => Math.floor(Math.random() * (max - min) ) + min;
 	const shuffle = array => array.sort(() => Math.random() - 0.5);
@@ -127,7 +125,6 @@
 			} else {
 				countedWords = JSON.parse(localStorage.kanaLearn);
 			}
-			console.log(JSON.stringify(localStorage));
 			listWords3 = document.getElementById('listWords3');
 			listWords4 = document.getElementById('listWords4');
 			countWords(countedWords);
