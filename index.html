@@ -8,6 +8,10 @@
 	<link href="css/preloader.css" rel="stylesheet" type="text/css">
 	<script src="kana.js" charset="utf-8" preload></script>
 	<script src="kana2.js" charset="utf-8" preload></script>
+	<!-- tkd special -->
+	<script src="pensum.js" charset="utf-8" preload></script>
+	<link rel="stylesheet" href="tkd.css" media="none" id="tkdCSS">
+
 	<link rel="manifest" href="manifest.json">
 	<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 	<script type="text/javascript">
@@ -35,6 +39,7 @@
 		let fetchedCharacters = [];
 		let dictCards = [];
 		let studyCardN = 0, correctStudy = [], totalCharacters = 0;
+		let dtkd;
 		// Onload DOM and Event setups. Also calls some functions to initialize the app.
 		window.onload = () => {
 		// STUDY
@@ -46,6 +51,11 @@
 			dkatakana = document.getElementById('katakana');
 			dkatakana.onclick = () => {
 				getCategory(checkBox,"katakana");
+				displayCharacters(totalCharacters,dictCards);
+			}
+			dtkd = document.getElementById('teori1');
+			dtkd.onclick = () => {
+				getCategory(checkBox,"teori1");
 				displayCharacters(totalCharacters,dictCards);
 			}
 			gameover = document.getElementById('gameover');
@@ -379,6 +389,7 @@
 		// Function to choose which HSK level, display as text too.
 		function getCategory(arrDom,kana="hiragana") {
 			dictCards = [];
+			console.log(kana)
 			for (let i = 0; i < arrDom.length; i++) {
 				if (arrDom[i].checked) {
 					console.log(arrDom[i].value)
@@ -389,6 +400,20 @@
 						dictCards.push(dict[i]);
 					}
 				}
+			}
+			if (kana == "teori1") {
+				console.log(teori1);
+				dictCards = []
+				const teori = eval(kana);
+				for (let i = 0; i < teori.length; i++) {
+					const a = teori[i].koreansk;
+					const b = teori[i].norsk;
+					dictCards.push({kana: a, roumaji: b});
+				}
+				console.log(dictCards)
+				document.getElementById("tkdCSS").media = '';
+			} else {
+				document.getElementById("tkdCSS").media = 'none';
 			}
 			if (dictCards.length <= 1) {
 				arrDom[0].checked = true;
@@ -422,6 +447,7 @@
 			<div class="kanaHolder">
 				<button class="btn kana" id="hiragana">Hiragana</button>
 				<button class="btn kana" id="katakana">Katakana</button>
+				<button class="btn kana" id="teori1">TKD special Jon</button>
 			</div>
 			<br/>
 			<input id="sliderange" type="range" name="" min="1" max="30" value="2"/>
