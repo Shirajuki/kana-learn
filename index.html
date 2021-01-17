@@ -39,7 +39,6 @@
 		let fetchedCharacters = [];
 		let dictCards = [];
 		let studyCardN = 0, correctStudy = [], totalCharacters = 0;
-		let dtkd;
 		// Onload DOM and Event setups. Also calls some functions to initialize the app.
 		window.onload = () => {
 		// STUDY
@@ -51,11 +50,6 @@
 			dkatakana = document.getElementById('katakana');
 			dkatakana.onclick = () => {
 				getCategory(checkBox,"katakana");
-				displayCharacters(totalCharacters,dictCards);
-			}
-			dtkd = document.getElementById('teori1');
-			dtkd.onclick = () => {
-				getCategory(checkBox,"teori1");
 				displayCharacters(totalCharacters,dictCards);
 			}
 			gameover = document.getElementById('gameover');
@@ -447,7 +441,6 @@
 			<div class="kanaHolder">
 				<button class="btn kana" id="hiragana">Hiragana</button>
 				<button class="btn kana" id="katakana">Katakana</button>
-				<button class="btn kana" id="teori1">TKD special Jon</button>
 			</div>
 			<br/>
 			<input id="sliderange" type="range" name="" min="1" max="30" value="2"/>
