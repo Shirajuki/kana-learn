@@ -8,10 +8,6 @@
 	<link href="css/preloader.css" rel="stylesheet" type="text/css">
 	<script src="kana.js" charset="utf-8" preload></script>
 	<script src="kana2.js" charset="utf-8" preload></script>
-	<!-- tkd special -->
-	<script src="pensum.js" charset="utf-8" preload></script>
-	<link rel="stylesheet" href="tkd.css" media="none" id="tkdCSS">
-
 	<link rel="manifest" href="manifest.json">
 	<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 	<script type="text/javascript">
@@ -383,7 +379,6 @@
 		// Function to choose which HSK level, display as text too.
 		function getCategory(arrDom,kana="hiragana") {
 			dictCards = [];
-			console.log(kana)
 			for (let i = 0; i < arrDom.length; i++) {
 				if (arrDom[i].checked) {
 					console.log(arrDom[i].value)
@@ -394,20 +389,6 @@
 						dictCards.push(dict[i]);
 					}
 				}
-			}
-			if (kana == "teori1") {
-				console.log(teori1);
-				dictCards = []
-				const teori = eval(kana);
-				for (let i = 0; i < teori.length; i++) {
-					const a = teori[i].koreansk;
-					const b = teori[i].norsk;
-					dictCards.push({kana: a, roumaji: b});
-				}
-				console.log(dictCards)
-				document.getElementById("tkdCSS").media = '';
-			} else {
-				document.getElementById("tkdCSS").media = 'none';
 			}
 			if (dictCards.length <= 1) {
 				arrDom[0].checked = true;
